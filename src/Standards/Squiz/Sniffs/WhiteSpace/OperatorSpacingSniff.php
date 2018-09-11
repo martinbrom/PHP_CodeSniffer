@@ -141,6 +141,14 @@ class OperatorSpacingSniff implements Sniff
             && (($tokens[($stackPtr - 1)]['code'] === T_INLINE_THEN
             && $tokens[($stackPtr)]['code'] === T_INLINE_ELSE) === false)
         ) {
+        	// skip array assignment operator
+        	if ($tokens[$stackPtr]['code'] === T_EQUAL
+				&& $tokens[$stackPtr - 1]['code'] === T_CLOSE_SQUARE_BRACKET
+				&& $tokens[$stackPtr - 2]['code'] === T_OPEN_SQUARE_BRACKET
+			) {
+        		return;
+			}
+
             $error = "Expected 1 space before \"$operator\"; 0 found";
             $fix   = $phpcsFile->addFixableError($error, $stackPtr, 'NoSpaceBefore');
             if ($fix === true) {
